@@ -1,0 +1,53 @@
+{
+  "Config": {
+    "LogDir": "./log",
+    "LogLevel": "Debug"
+  },
+  "Mysql": {
+    "Addr": "127.0.0.1:3306",
+    "User": "root",
+    "Password": "zhangfeng//0",
+    "MaxConns": "2048",
+    "MaxIdle": "10",
+    "ConnLifeTime": "0",
+    "MysqlHealthCheckTimer": "10"
+  },
+  "Redis": {
+    "Addr": "127.0.0.1:6379",
+    "Index": 0,
+    "Password": "",
+    "MaxIdel": "5",
+    "IdleTimeout": "10",
+    "MaxActive": "50",
+    "Wait": "false",
+    "MysqlHealthCheckTimer": "10"
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

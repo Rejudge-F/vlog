@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"vlog/controllers"
+	"vlog/server"
 )
 
 func Initialize() {
@@ -42,4 +44,9 @@ func Initialize() {
 func main() {
 	Initialize()
 
+	server := server.Server{
+		Controller: &controllers.MainController{},
+	}
+
+	server.Run(":8088")
 }

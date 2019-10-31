@@ -17,17 +17,17 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello world"))
 }
 
-func main() {
-	fileHandler := http.FileServer(http.Dir("./video"))
-
-	http.Handle("/video/", http.StripPrefix("/video/", fileHandler))
-
-	http.HandleFunc("/api/list", getFileListHandler)
-	http.HandleFunc("/api/upload", uploadVlogHandler)
-	http.HandleFunc("/sayhello", sayHello)
-
-	http.ListenAndServe(":8088", nil)
-}
+//func main() {
+//	fileHandler := http.FileServer(http.Dir("./video"))
+//
+//	http.Handle("/video/", http.StripPrefix("/video/", fileHandler))
+//
+//	http.HandleFunc("/api/list", getFileListHandler)
+//	http.HandleFunc("/api/upload", uploadVlogHandler)
+//	http.HandleFunc("/sayhello", sayHello)
+//
+//	http.ListenAndServe(":8088", nil)
+//}
 
 func uploadVlogHandler(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, 15*1024*1024)

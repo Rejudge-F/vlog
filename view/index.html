@@ -1,10 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>vlog</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+
 </head>
 <body>
-$END$
+<div class="page-group">
+    <div class="page page-current">
+        <header class="bar bar-nav">
+            <h1 class="title">主页</h1>
+        </header>
+        <div class="content" id="contentMp4"></div>
+        <div class="bar bar-tab">
+            <div class="row">
+                <div class="col-50">
+                    <a onclick="getList()" class="button button-big button-fill">列表</a>
+                </div>
+                <div class="col-50">
+                    <form id="signupListImportForm" enctype="multipart/form-data">
+                        <input type="file" id="btn_file" style="display:none" name="uploadFiles" onchange="uploadFile()">
+                    </form>
+                    <a onclick="selectFile()" class="button button-big button-fill">上传</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.onload = function () {
+        getList()
+    }
+    function getList() {
+        $.getJSON(
+            "http://localhost:8088/api/list",
+            null,
+            function    (result) {
+                var testDiv = document.getElementById("contentMp4");
+                testDiv.innerHTML=""
+                for (var i = 0; i < result.length; i++) {
+                    testDiv.innerHTML +=
+                        `
+        <div class="card">
+            <div class="card-content">
+                <div class="card-content-inner">
+                    <video controls="controls" preload="auto" width="100%" height="100%">
+                        <source src=`+result[i]+` type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+                        `
+                }
+            }
+        );
+    }
+    
+    function selectFile() {
+        var file = document.getElementById("btn_file").click();
+    }
+
+    function uploadFile() {
+        var file = document.getElementById("btn_file").files[0];
+        var formData=new FormData();
+        formData.append("upload_video", file)
+        $.ajax({
+            url:"http://localhost:8088/api/upload",
+            type:"post",
+            data:formData,
+            processData:false,
+            contentType:false,
+            success:function (res) {
+                if(res){
+                    alert("上传成功!", res);
+                }
+                console.log(res)
+            }
+        });
+    }
+</script>
+
+<script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+
 </body>
 </html>

@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	"github.com/astaxie/beego/logs"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -27,6 +28,7 @@ func (controller *MainController) Initialize() {
 
 // initRoutes Initialize routes
 func (controller *MainController) initRoutes() {
+	controller.Router.HandleFunc("/", http.HandlerFunc(controller.showIndex))
 	controller.Router.Handle("/video/{video_name}", http.HandlerFunc(controller.getVideo)).Methods("GET")
 	controller.Router.HandleFunc("/api/upload", http.HandlerFunc(controller.uploadVideo))
 	controller.Router.HandleFunc("/api/list", http.HandlerFunc(controller.getVideoList))
@@ -44,7 +46,6 @@ func (controller *MainController) uploadVideo(w http.ResponseWriter, r *http.Req
 		http.Error(w, "file size too large, limit 10M", http.StatusInternalServerError)
 		return
 	}
-
 	f, fHeader, err := r.FormFile("upload_video")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -58,7 +59,7 @@ func (controller *MainController) uploadVideo(w http.ResponseWriter, r *http.Req
 	defer f.Close()
 
 	fileNewName := getNewName(fName + time.Now().String())
-	newFile, err := os.Create("./video/" + fileNewName + path.Ext(fName))
+	newFile, err := os.Create("./videos/" + fileNewName + path.Ext(fName))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,7 +75,7 @@ func (controller *MainController) uploadVideo(w http.ResponseWriter, r *http.Req
 
 // getVideoList get all video
 func (controller *MainController) getVideoList(w http.ResponseWriter, r *http.Request) {
-	files, err := filepath.Glob("./video/*")
+	files, err := filepath.Glob("./videos/*")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -93,6 +94,18 @@ func (controller *MainController) getVideoList(w http.ResponseWriter, r *http.Re
 
 	w.Write(retJson)
 	return
+}
+
+func (controller *MainController) showIndex(w http.ResponseWriter, r *http.Request) {
+	file, err := os.Open("./view/index.html")
+	if err != nil {
+		logs.Error("open Index failed")
+		return
+	}
+	defer file.Close()
+	buffer := make([]byte, 15*1024*1024)
+	file.Read(buffer)
+	w.Write(buffer)
 }
 
 // getNewName Util function
